@@ -13,7 +13,10 @@ function HomePage(props) {
 export async function getStaticProps() {
   const featuredEvents = await getFeaturedEvents();
 
-  return { props: { events: featuredEvents } };
+  return { 
+    props: { events: featuredEvents },
+    revalidate: 1800 // en production, la page sera rechargé au moins toutes les demi heures pour refleter les données de la base
+    };
 }
 
 export default HomePage;
