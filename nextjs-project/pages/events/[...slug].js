@@ -1,14 +1,16 @@
 import { useRouter } from "next/router";
-import { getFilteredEvents } from "../../dummy-data";
+import { getFilteredEvents } from "../../helpers/api-util";
 import EventList from "../../components/events/event-list";
 import ResultsTitle from "../../components/events/results-title";
 import { Fragment } from "react";
 import Button from "../../components/ui/button";
 import ErrorAlert from "../../components/ui/error-alert";
 
+i
+
 function FilteredEventsPage() {
-  const router = useRouter();
-  const filterData = router.query.slug;
+  // const router = useRouter();
+  // const filterData = router.query.slug;
 
   if (!filterData) {
     return <p className="center">Loading...</p>;
@@ -66,5 +68,24 @@ function FilteredEventsPage() {
       <EventList items={filteredEvents} />
     </Fragment>
   );
+}
+
+export async function getStaticProps(context) {
+  // le context est nécessaire ici pcq l'on veut les infos pour un id spécifique
+  const eventId = context.params.eventId;
+  const event = await getEventById(eventId);
+  return {
+    props: { selectedEvent: event },
+    revalidate: 30
+  };
+}
+
+export async function getStaticPaths() {
+  const events = await getFeaturedEvents();
+  const paths = events.map(event => ({ params: { eventId: event.id}}))
+  return {
+    paths: paths,
+    fallback: 'blocking'
+  }
 }
 export default FilteredEventsPage;
