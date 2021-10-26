@@ -6,29 +6,20 @@ import { Fragment } from "react";
 import Button from "../../components/ui/button";
 import ErrorAlert from "../../components/ui/error-alert";
 
-i
-
-function FilteredEventsPage() {
-  // const router = useRouter();
+function FilteredEventsPage(props) {
+  const router = useRouter();
   // const filterData = router.query.slug;
 
-  if (!filterData) {
-    return <p className="center">Loading...</p>;
-  }
-  const filteredYear = filterData[0];
-  const filteredMonth = filterData[1];
+  // if (!filterData) {
+  //   return <p className="center">Loading...</p>;
+  // }
+  // const filteredYear = filterData[0];
+  // const filteredMonth = filterData[1];
 
-  const numYear = +filteredYear;
-  const numMonth = +filteredMonth;
+  // const numYear = +filteredYear;
+  // const numMonth = +filteredMonth;
 
-  if (
-    isNaN(numYear) ||
-    isNaN(numMonth) ||
-    numYear > 2030 ||
-    numYear < 2021 ||
-    numMonth < 1 ||
-    numMonth > 12
-  ) {
+  if (props.hasError) {
     return (
       <Fragment>
         <ErrorAlert>
@@ -40,10 +31,7 @@ function FilteredEventsPage() {
       </Fragment>
     );
   }
-  const filteredEvents = getFilteredEvents({
-    year: numYear,
-    month: numMonth,
-  });
+  const filteredEvents = props.events;
 
   if (!filteredEvents || filteredEvents.length === 0) {
     return (
@@ -58,9 +46,8 @@ function FilteredEventsPage() {
     );
   }
 
-  const date = new Date(numYear, numMonth - 1);
+  const date = new Date(props.date.year, props.date.month - 1);
 
-  console.log(filterData);
 
   return (
     <Fragment>
@@ -70,22 +57,55 @@ function FilteredEventsPage() {
   );
 }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
+  // trop de pages possibles à rendre -> pré-générer sur le serveur (getServerSideProps)
   // le context est nécessaire ici pcq l'on veut les infos pour un id spécifique
-  const eventId = context.params.eventId;
-  const event = await getEventById(eventId);
+  const { params } = context;
+  const filterData = params.slug;
+  const filteredYear = filterData[0];
+  const filteredMonth = filterData[1];
+
+  const numYear = +filteredYear;
+  const numMonth = +filteredMonth;
+
+  if (
+    isNaN(numYear) ||
+    isNaN(numMonth) ||
+    numYear > 2030 ||
+    numYear < 2021 ||
+    numMonth < 1 ||
+    numMonth > 12
+  ) {
+    return {
+      props: { hasError: true },
+      // notFound: true,
+      // redirect: {
+      //   destination: '/error'
+      // }
+    };
+  }
+  const filteredEvents = await getFilteredEvents({
+    year: numYear,
+    month: numMonth,
+  });
+
   return {
-    props: { selectedEvent: event },
-    revalidate: 30
+    props: {
+      events: filteredEvents,
+      date: {
+        year: numYear,
+        month: numMonth,
+      },
+    },
   };
 }
 
-export async function getStaticPaths() {
-  const events = await getFeaturedEvents();
-  const paths = events.map(event => ({ params: { eventId: event.id}}))
-  return {
-    paths: paths,
-    fallback: 'blocking'
-  }
-}
+// export async function getStaticPaths() {
+//   const events = await getFeaturedEvents();
+//   const paths = events.map(event => ({ params: { eventId: event.id}}))
+//   return {
+//     paths: paths,
+//     fallback: 'blocking'
+//   }
+// }
 export default FilteredEventsPage;
