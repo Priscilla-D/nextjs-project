@@ -5,32 +5,34 @@ import ResultsTitle from "../../components/events/results-title";
 import { Fragment, useEffect, useState } from "react";
 import Button from "../../components/ui/button";
 import ErrorAlert from "../../components/ui/error-alert";
-import useSWR from 'swr';
+import useSWR from "swr";
 
 function FilteredEventsPage(props) {
- const [loadedEvents, setLoadedEvents] = useState();
+  const [loadedEvents, setLoadedEvents] = useState();
   const router = useRouter();
   const filterData = router.query.slug;
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
-  const { data, error } = useSWR('https://nextjs-course-2fa09-default-rtdb.europe-west1.firebasedatabase.app/events.json', fetcher);
-useEffect(() => {
-  if(data) {
-  
- const events = [];
+  const { data, error } = useSWR(
+    "https://nextjs-course-2fa09-default-rtdb.europe-west1.firebasedatabase.app/events.json",
+    fetcher
+  );
+  useEffect(() => {
+    if (data) {
+      const events = [];
 
-  for (const key in data) {
-    events.push({
-      id: key,
-      ...data[key],
-    });
-  }
-  setLoadedEvents(events);
-  }
-}, [data]);
+      for (const key in data) {
+        events.push({
+          id: key,
+          ...data[key],
+        });
+      }
+      setLoadedEvents(events);
+    }
+  }, [data]);
 
   if (!filterData) {
-    return <p className="center">Loading...</p>
+    return <p className="center">Loading...</p>;
   }
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
@@ -45,23 +47,25 @@ useEffect(() => {
     numYear < 2021 ||
     numMonth < 1 ||
     numMonth > 12 ||
-    error) {
-      return (
-        <Fragment>
-          <ErrorAlert>
-            <p>Invalid filter. Please adjust your values.</p>
-          </ErrorAlert>
-          <div className="center">
-            <Button link="/events">Show All Events</Button>
-          </div>
-        </Fragment>
-      );
-    }
+    error
+  ) {
+    return (
+      <Fragment>
+        <ErrorAlert>
+          <p>Invalid filter. Please adjust your values.</p>
+        </ErrorAlert>
+        <div className="center">
+          <Button link="/events">Show All Events</Button>
+        </div>
+      </Fragment>
+    );
+  }
 
   const filteredEvents = loadedEvents.filter((event) => {
     const eventDate = new Date(event.date);
     return (
-      eventDate.getFullYear() === numYear && eventDate.getMonth() === numMonth - 1
+      eventDate.getFullYear() === numYear &&
+      eventDate.getMonth() === numMonth - 1
     );
   });
 
@@ -80,15 +84,13 @@ useEffect(() => {
 
   const date = new Date(numYear, numMonth - 1);
 
-
   return (
     <Fragment>
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
   );
-  }
-
+}
 
 // export async function getServerSideProps(context) {
 //   // trop de pages possibles à rendre -> pré-générer sur le serveur (getServerSideProps)
