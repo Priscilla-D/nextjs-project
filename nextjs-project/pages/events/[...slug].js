@@ -33,9 +33,35 @@ function FilteredEventsPage(props) {
     }
   }, [data]);
 
+ 
+
+  let pageHeadData = <Head>
+    <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`A list of filtered events.`}
+      />
+  </Head>
+
   if (!filterData) {
-    return <p className="center">Loading...</p>;
+    return (
+      <Fragment>
+        {pageHeadData}
+        <p className="center">Loading...</p>
+      </Fragment>
+    );
   }
+
+  pageHeadData = (
+    <Head>
+      <title>Filtered Events</title>
+      <meta
+        name="description"
+        content={`All events for ${numMonth}/${numYear}.`}
+      />
+    </Head>
+  );
+
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
 
@@ -89,13 +115,6 @@ function FilteredEventsPage(props) {
 
   return (
     <Fragment>
-      <Head>
-        <title>Filtered Events</title>
-        <meta
-          name="description"
-          content={`All events for ${numMonth}/${numYear}.`}
-        />
-      </Head>
       <ResultsTitle date={date} />
       <EventList items={filteredEvents} />
     </Fragment>
