@@ -34,7 +34,6 @@ function FilteredEventsPage(props) {
   }, [data]);
 
  
-
   let pageHeadData = <Head>
     <title>Filtered Events</title>
       <meta
