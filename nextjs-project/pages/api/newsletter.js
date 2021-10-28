@@ -9,11 +9,10 @@ async function handler(req, res) {
       return;
     }
     const client = await MongoClient.connect(
-      'mongodb+srv://priscilla:placeshaker@cluster0.qujgr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
+      'mongodb+srv://priscilla:placeshaker@cluster0.qujgr.mongodb.net/events?retryWrites=true&w=majority'
     );
-    console.log(client);
     const db = client.db();
-    await db.collection('emails').insertOne({ email: userEmail });
+    await db.collection('newsletter').insertOne({ email: userEmail });
 
     client.close(); // déconnexion de la DB
 
