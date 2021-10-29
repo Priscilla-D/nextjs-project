@@ -7,7 +7,7 @@ const NotificationContext = createContext({
 });
 
 export function NotificationContextProvider(props) {
-  const [activeNorification, setActiveNotification] = useState();
+  const [activeNotification, setActiveNotification] = useState();
   function showNotificationHandler(notificationData) {
     setActiveNotification({
       title: notificationData.title,
