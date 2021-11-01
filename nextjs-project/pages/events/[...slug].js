@@ -63,8 +63,8 @@ function FilteredEventsPage(props) {
   const filteredYear = filterData[0];
   const filteredMonth = filterData[1];
 
-  const numYear = +filteredYear;
-  const numMonth = +filteredMonth;
+  const numYear = +filteredYear; // conversion de string à number
+  const numMonth = +filteredMonth; // conversion de string à number
 
   const isValidRange =
     isNaN(numYear) ||

@@ -3,7 +3,7 @@ import { getFeaturedEvents } from "../helpers/api-util";
 import EventList from "../components/events/event-list";
 import NewsletterRegistration from "../components/input/newsletter-registration";
 
-function HomePage(props) {
+function HomePage(props) { // props -> les infos de getStaticProps (chargées en 1er)
   return (
     <div>
       <ul>
