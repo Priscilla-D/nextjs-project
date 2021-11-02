@@ -5,7 +5,7 @@ module.exports = (phase) => { // syntaxe node.js équivalente à export default
   
   if(phase === PHASE_DEVELOPMENT_SERVER){
     return {
-      reactStrictMode: true,
+      // reactStrictMode: true,
       env: {
         mongodb_username: 'priscilla',
         mongodb_password: 'placeshaker',
